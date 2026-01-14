@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getAllGames, getAllPlayers, db } from '$lib/db';
-	import { maps } from '$lib/gameData';
+    import { resolve } from '$app/paths';
 
 	type GameWithDetails = Awaited<ReturnType<typeof getAllGames>>[number];
 	type Player = Awaited<ReturnType<typeof getAllPlayers>>[number];
@@ -151,7 +151,7 @@
 <div class="page-background min-h-screen bg-amber-50">
 	<div class="mx-auto max-w-6xl px-4 py-8">
 		<header class="mb-8">
-			<a href="/" class="mb-4 inline-block text-amber-600 hover:text-amber-700">← Back to Home</a>
+			<a href="{resolve("/")}" class="mb-4 inline-block text-amber-600 hover:text-amber-700">← Back to Home</a>
 			<h1 class="text-3xl font-bold text-amber-900">📊 Statistics</h1>
 		</header>
 
@@ -163,7 +163,7 @@
 			<div class="rounded-lg bg-white p-8 text-center shadow">
 				<p class="text-gray-500">No games recorded yet. Start tracking games to see statistics!</p>
 				<a
-					href="/games/new"
+					href="{resolve("/games/new")}"
 					class="mt-4 inline-block rounded-lg bg-amber-600 px-6 py-3 font-semibold text-white shadow-md transition hover:bg-amber-700"
 				>
 					+ Record First Game
