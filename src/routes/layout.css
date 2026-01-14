@@ -1,0 +1,51 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* Subtle page background */
+.page-background {
+	background-image: url('/background.png');
+	background-position: bottom;
+	background-size: cover;
+}
+
+/* Map card backgrounds */
+.map-card-bg {
+	position: relative;
+	overflow: hidden;
+}
+
+.map-card-bg::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 20%;
+	background-size: cover;
+	background-position: center;
+	opacity: 1;
+	z-index: 0;
+	clip-path: polygon(70% 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.map-card-bg > * {
+	position: relative;
+	z-index: 1;
+}
+
+/* Individual map backgrounds */
+.map-autumn::before {
+	background-image: url('/autumn.jpg');
+}
+
+.map-mountain::before {
+	background-image: url('/moauntain.jpg');
+}
+
+.map-winter::before {
+	background-image: url('/winter.jpg');
+}
+
+.map-lake::before {
+	background-image: url('/lake.jpg');
+}
