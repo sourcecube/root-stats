@@ -63,7 +63,7 @@
 				participants,
 				notes: notes || undefined
 			});
-			goto('/');
+			goto(resolve('/'));
 		} catch (error) {
 			alert('Failed to save game');
 			isSubmitting = false;

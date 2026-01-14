@@ -28,7 +28,7 @@
 
 		try {
 			await deleteGameFromDb(game.id);
-			goto('/');
+			goto(resolve('/'));
 		} catch {
 			alert('Failed to delete game');
 		}
