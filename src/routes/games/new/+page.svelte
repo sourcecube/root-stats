@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { factions, maps, landmarks, hirelings } from '$lib/gameData';
 	import { getAllPlayers, createGame } from '$lib/db';
+	import { resolve } from '$app/paths';
 
 	interface Participant {
 		playerName: string;
@@ -77,7 +78,7 @@
 <div class="page-background min-h-screen bg-amber-50">
 	<div class="mx-auto max-w-4xl px-4 py-8">
 		<header class="mb-8">
-			<a href="/" class="text-amber-600 hover:text-amber-800">← Back to Home</a>
+			<a href="{resolve("/")}" class="text-amber-600 hover:text-amber-800">← Back to Home</a>
 			<h1 class="mt-4 text-3xl font-bold text-amber-900">Record New Game</h1>
 		</header>
 

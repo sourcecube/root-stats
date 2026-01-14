@@ -188,3 +188,137 @@ export async function deleteGame(id: string) {
 	await db.gameHirelings.where('gameId').equals(id).delete();
 	await db.games.delete(id);
 }
+
+// Export/Import functions
+export interface DatabaseExport {
+	version: number;
+	exportedAt: string;
+	games: Game[];
+	players: Player[];
+	gameParticipants: GameParticipant[];
+	gameLandmarks: GameLandmark[];
+	gameHirelings: GameHireling[];
+}
+
+export async function exportDatabase(): Promise<DatabaseExport> {
+	const [games, players, gameParticipants, gameLandmarks, gameHirelings] = await Promise.all([
+		db.games.toArray(),
+		db.players.toArray(),
+		db.gameParticipants.toArray(),
+		db.gameLandmarks.toArray(),
+		db.gameHirelings.toArray()
+	]);
+
+	return {
+		version: 1,
+		exportedAt: new Date().toISOString(),
+		games,
+		players,
+		gameParticipants,
+		gameLandmarks,
+		gameHirelings
+	};
+}
+
+export async function importDatabase(data: DatabaseExport, merge = false): Promise<{ imported: number; skipped: number }> {
+	if (!merge) {
+		// Clear existing data
+		await Promise.all([
+			db.games.clear(),
+			db.players.clear(),
+			db.gameParticipants.clear(),
+			db.gameLandmarks.clear(),
+			db.gameHirelings.clear()
+		]);
+	}
+
+	let imported = 0;
+	let skipped = 0;
+
+	// Import players first (to handle references)
+	for (const player of data.players) {
+		try {
+			if (merge) {
+				const existing = await db.players.get(player.id);
+				if (existing) {
+					skipped++;
+					continue;
+				}
+			}
+			await db.players.add(player);
+			imported++;
+		} catch {
+			skipped++;
+		}
+	}
+
+	// Import games
+	for (const game of data.games) {
+		try {
+			if (merge) {
+				const existing = await db.games.get(game.id);
+				if (existing) {
+					skipped++;
+					continue;
+				}
+			}
+			await db.games.add(game);
+			imported++;
+		} catch {
+			skipped++;
+		}
+	}
+
+	// Import game participants
+	for (const participant of data.gameParticipants) {
+		try {
+			if (merge) {
+				const existing = await db.gameParticipants.get(participant.id);
+				if (existing) {
+					skipped++;
+					continue;
+				}
+			}
+			await db.gameParticipants.add(participant);
+			imported++;
+		} catch {
+			skipped++;
+		}
+	}
+
+	// Import landmarks
+	for (const landmark of data.gameLandmarks) {
+		try {
+			if (merge) {
+				const existing = await db.gameLandmarks.get(landmark.id);
+				if (existing) {
+					skipped++;
+					continue;
+				}
+			}
+			await db.gameLandmarks.add(landmark);
+			imported++;
+		} catch {
+			skipped++;
+		}
+	}
+
+	// Import hirelings
+	for (const hireling of data.gameHirelings) {
+		try {
+			if (merge) {
+				const existing = await db.gameHirelings.get(hireling.id);
+				if (existing) {
+					skipped++;
+					continue;
+				}
+			}
+			await db.gameHirelings.add(hireling);
+			imported++;
+		} catch {
+			skipped++;
+		}
+	}
+
+	return { imported, skipped };
+}

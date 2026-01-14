@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { getGame, deleteGame as deleteGameFromDb } from '$lib/db';
+	import { resolve } from '$app/paths';
 
 	type GameWithDetails = NonNullable<Awaited<ReturnType<typeof getGame>>>;
 
@@ -14,6 +15,10 @@
 
 	onMount(async () => {
 		const id = $page.params.id;
+		if (!id) {
+			loading = false;
+			return;
+		}
 		game = await getGame(id);
 		loading = false;
 	});
@@ -37,7 +42,7 @@
 <div class="page-background min-h-screen bg-amber-50">
 	<div class="mx-auto max-w-4xl px-4 py-8">
 		<header class="mb-8">
-			<a href="/" class="text-amber-600 hover:text-amber-800">← Back to Home</a>
+			<a href="{resolve("/")}"  class="text-amber-600 hover:text-amber-800">← Back to Home</a>
 			{#if game}
 				<div class="mt-4 flex items-center justify-between">
 					<h1 class="text-3xl font-bold text-amber-900">Game Details</h1>
